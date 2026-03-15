@@ -1,0 +1,119 @@
+openapi: 3.0.3
+info:
+  title: CowCornerCricket API
+  version: 1.0.0
+  description: API for live scores, match center, profiles, stats, and analytics lab.
+servers:
+  - url: https://api.cowcornercricket.com/v1
+paths:
+  /matches/live:
+    get:
+      summary: List live matches
+      responses:
+        '200':
+          description: Live matches
+  /matches/upcoming:
+    get:
+      summary: List upcoming matches
+      responses:
+        '200':
+          description: Upcoming fixtures
+  /matches/results:
+    get:
+      summary: List recent results
+      responses:
+        '200':
+          description: Recent matches
+  /matches/{matchId}:
+    get:
+      summary: Match center summary payload
+      parameters:
+        - in: path
+          name: matchId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Match summary, scorecard, charts metadata
+  /matches/{matchId}/commentary:
+    get:
+      summary: Ball-by-ball commentary
+      responses:
+        '200':
+          description: Commentary list
+  /players/{playerSlug}:
+    get:
+      summary: Player profile with split stats and trends
+      responses:
+        '200':
+          description: Player profile
+  /teams/{teamSlug}:
+    get:
+      summary: Team profile and records
+      responses:
+        '200':
+          description: Team profile
+  /stats/records:
+    get:
+      summary: Traditional records leaderboard
+      parameters:
+        - in: query
+          name: format
+          schema:
+            type: string
+        - in: query
+          name: metric
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Records results
+  /analytics/questions:
+    get:
+      summary: Published fan question analyses
+      responses:
+        '200':
+          description: Questions catalog
+  /analytics/questions/{slug}:
+    get:
+      summary: Single analytics question with chart-ready datasets
+      responses:
+        '200':
+          description: Question payload
+  /analytics/lab/query:
+    post:
+      summary: Execute filterable analytics query
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyticsQueryRequest'
+      responses:
+        '200':
+          description: Query result matrix + chart config hints
+components:
+  schemas:
+    AnalyticsQueryRequest:
+      type: object
+      properties:
+        metric:
+          type: string
+          example: best_death_bowlers
+        format:
+          type: string
+          example: T20
+        startYear:
+          type: integer
+          example: 2015
+        endYear:
+          type: integer
+          example: 2025
+        opposition:
+          type: string
+        venue:
+          type: string
+        minMatches:
+          type: integer
+          default: 10
